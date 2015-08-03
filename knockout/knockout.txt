@@ -1,0 +1,91 @@
+controller code
+
+
+public function test1(){
+      $query=$this->Tests->find('all');
+                $this->set("res",$query);
+                $this->response->type('json');
+                $this->render('/Common/ajaxView','ajax');  
+    }
+    
+    public function test2(){
+       $test = $this->Tests->newEntity();
+        if ($this->request->is('post')) {
+            $test = $this->Tests->patchEntity($test, $this->request->data);
+            if ($this->Tests->save($test)) {
+                
+            } else {
+                $this->Flash->error('The test could not be saved. Please, try again.');
+            }
+        }        
+        }
+        
+        
+        public function test3(){
+         
+        }
+=============================================================
+test3.ctp
+
+<div data-bind="foreach:list ">
+<p>First name: <strong data-bind="text: firstName"></strong></p>
+<p>Last name: <strong data-bind="text: lastName"></strong></p>
+</div>
+
+
+<button data-bind="click:clicked" id="2">clickd</button>
+
+
+<?php echo $this->Html->script('knockout-2.3.0');?>
+<script type="text/javascript">
+  function AppViewModel() {
+      var me=this;
+    me.firstName = ko.observable();
+    me.lastName = ko.observable();
+    me.list=ko.observableArray([]);
+    $.get('/tests/test1',function(d){
+         for(i in d){
+             console.log(d[i].firstname);
+             me.list.push({firstName:d[i].firstname,lastName:d[i].lastname});
+         }
+    });
+    me.clicked=function(d,e){
+        var v=e.currentTarget.id;
+        
+       
+    }
+}
+
+// Activates knockout.js
+ko.applyBindings(new AppViewModel());
+</script>
+
+============================================================
+
+test2.ctp
+
+
+<p>First name: <strong data-bind="text: firstName"></strong></p>
+<p>Last name: <strong data-bind="text: lastName"></strong></p>
+
+<p>First name: <input data-bind="value: firstName" /></p>
+<p>Last name: <input data-bind="value: lastName" /></p>
+
+
+
+<button data-bind="click: capitalizeLastName">Go caps</button>
+<?php echo $this->Html->script('knockout-2.3.0');?>
+<script type="text/javascript">
+  function AppViewModel() {
+    this.firstName = ko.observable();
+    this.lastName = ko.observable();
+    this.capitalizeLastName = function(d) {
+      $.post('/tests/test2',{"firstname":this.firstName(),"lastname":this.lastName()},function(d){
+          console.log(d);
+      });
+    };    
+}
+
+// Activates knockout.js
+ko.applyBindings(new AppViewModel());
+</script>
